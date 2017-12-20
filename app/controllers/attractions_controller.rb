@@ -1,5 +1,5 @@
 class AttractionsController < ApplicationController
-  before_action :set_attraction, only: [:show, :edit, :update]
+  before_action :set_attraction, only: [:show, :edit, :update, :destroy]
 
   def index
     @attractions = Attraction.all
@@ -16,13 +16,25 @@ class AttractionsController < ApplicationController
   end
 
   def create
-    @attraction = Attraction.create(attraction_params)
-    redirect_to attraction_path(@attraction)
+    @attraction = Attraction.new(attraction_params)
+    if @attraction.save
+      redirect_to attraction_path(@attraction), notice: "Attraction was successfully created."
+    else
+      render :new
+    end
   end
 
   def update
-    @attraction.update(name: params[:attraction][:name])
-    redirect_to attraction_path(@attraction)
+    if @attraction.update(attraction_params)
+      redirect_to attraction_path(@attraction), notice: "Attraction was successfully updated."
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @attraction.destroy
+    redirect_to attractions_path, notice: "Attraction was successfully deleted."
   end
 
   private
